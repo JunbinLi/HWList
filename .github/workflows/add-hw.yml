@@ -1,0 +1,39 @@
+name: add-hw.yml
+
+on:
+  workflow_dispatch:
+    inputs:
+      content:
+        description: '事项内容'
+        required: true
+        type: string
+      deadline:
+        description: '截止日期 (YYYY-MM-DD)'
+        required: true
+        type: string
+
+jobs:
+  add-memo:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run script to update memo
+        run: node scripts/add-memo.js
+        env:
+          INPUT_CONTENT: ${{ inputs.content }}
+          INPUT_DEADLINE: ${{ inputs.deadline }}
+
+      - uses: EndBug/add-and-commit@v10
+        with:
+          add: 'week-*.html'
+          message: '📝 ${{ inputs.deadline }}: ${{ inputs.content }}'
+          default_author: github_actions
