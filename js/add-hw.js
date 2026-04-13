@@ -176,3 +176,68 @@ if (html.includes(dateMarker)) {
 
 fs.writeFileSync(filePath, html);
 console.log(`Added to ${weekFileName}: ${content}`);
+
+function updateIndex() {
+  const indexPath = path.join(process.cwd(), 'index.html');
+
+  // 如果 index.html 不存在，创建基础版本
+  if (!fs.existsSync(indexPath)) {
+    const baseIndex = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>📋 备忘录总览</title>
+  <style>
+    body { font-family: system-ui; max-width: 800px; margin: 0 auto; padding: 40px 20px; background: #f5f7fa; }
+    h1 { text-align: center; color: #2d3436; }
+    .week-list { display: flex; flex-direction: column; gap: 16px; }
+    .week-link { background: white; padding: 24px; border-radius: 16px; text-decoration: none; color: #2d3436; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .week-dates { font-size: 1.2em; font-weight: 600; color: #0078d4; }
+    .timestamp { text-align: center; color: #b2bec3; font-size: 0.8em; margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <h1>📋 备忘录总览</h1>
+  <div class="week-list" id="weekList">
+    <!-- WEEK-LINKS -->
+  </div>
+  <div class="timestamp">最后更新: <!-- TIMESTAMP --></div>
+</body>
+</html>`;
+    fs.writeFileSync(indexPath, baseIndex);
+  }
+
+  let indexHtml = fs.readFileSync(indexPath, 'utf8');
+
+  // 检查是否已存在该周链接
+  if (indexHtml.includes(`href="${weekFileName}"`)) {
+    // 只更新时间戳
+    const timestamp = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+    indexHtml = indexHtml.replace(/<!-- TIMESTAMP -->/, timestamp);
+    fs.writeFileSync(indexPath, indexHtml);
+    return;
+  }
+
+  // 创建新链接
+  const weekStart = weekMonday.toISOString().split('T')[0].replace(/-/g, '/');
+  const weekEnd = weekSunday.toISOString().split('T')[0].replace(/-/g, '/');
+
+  const newLink = `
+    <a href="${weekFileName}" class="week-link">
+      <div class="week-dates">${weekStart} - ${weekEnd}</div>
+      <div>→</div>
+    </a>`;
+
+  // 插入到 WEEK-LINKS 标记前
+  indexHtml = indexHtml.replace('<!-- WEEK-LINKS -->', newLink + '\n    <!-- WEEK-LINKS -->');
+
+  // 更新时间戳
+  const timestamp = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+  indexHtml = indexHtml.replace(/<!-- TIMESTAMP -->/, timestamp);
+
+  fs.writeFileSync(indexPath, indexHtml);
+  console.log(`Updated index.html`);
+}
+
+// 执行更新
+updateIndex();

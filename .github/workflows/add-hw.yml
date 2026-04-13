@@ -34,6 +34,8 @@ jobs:
 
       - uses: EndBug/add-and-commit@v10
         with:
-          add: 'week-*.html'
+          add: |
+            week-*.html
+            index.html
           message: '📝 ${{ inputs.deadline }}: ${{ inputs.content }}'
           default_author: github_actions
