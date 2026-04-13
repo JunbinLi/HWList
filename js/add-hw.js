@@ -19,7 +19,7 @@ const filePath = path.join(process.cwd(), weekFileName);
 const weekSunday = new Date(weekMonday);
 weekSunday.setDate(weekMonday.getDate() + 6);
 
-const weekLabel = `${weekMonday.toISOString().split('T')[0]} 至 ${weekSunday.toISOString().split('T')[0]}`;
+const weekLabel = `${weekMonday.toISOString().split('T')[0]} - ${weekSunday.toISOString().split('T')[0]}`;
 
 // HTML 模板
 function createTemplate(weekLabel) {
@@ -28,7 +28,7 @@ function createTemplate(weekLabel) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📅 周计划 ${weekLabel}</title>
+  <title>2E HW List</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -94,13 +94,13 @@ function createTemplate(weekLabel) {
   </style>
 </head>
 <body>
-  <h1>📅 周计划</h1>
+  <h1>📅 2E HW List</h1>
   <div class="week-range">${weekLabel}</div>
 
   <!-- DATE-GROUPS -->
 
   <div class="back-link">
-    <a href="index.html">← 返回总览</a>
+    <a href="index.html">← Return to content page</a>
   </div>
 </body>
 </html>`;
@@ -115,7 +115,7 @@ if (fs.existsSync(filePath)) {
 }
 
 const now = new Date().toLocaleString('zh-CN', {
-  month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'
+  timeZone: 'Asia/Shanghai', year: 'numeric' ,month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false
 });
 
 // 检查日期分组是否存在
@@ -123,7 +123,7 @@ const dateMarker = `<!-- DATE-${deadline} -->`;
 const taskCard = `
       <div class="task-card">
         <div class="task-content">${content}</div>
-        <div class="task-time">📝 添加于 ${now}</div>
+        <div class="task-time"> Added on ${now}</div>
       </div>`;
 
 if (html.includes(dateMarker)) {
