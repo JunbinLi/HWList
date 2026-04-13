@@ -29,69 +29,7 @@ function createTemplate(weekLabel) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>2E HW List</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background: #f5f7fa;
-    }
-    h1 {
-      color: #2d3436;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .week-range {
-      text-align: center;
-      color: #636e72;
-      font-size: 1.1em;
-      margin-bottom: 30px;
-    }
-    .date-group {
-      background: white;
-      margin: 20px 0;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    .date-header {
-      background: #0078d4;
-      color: white;
-      padding: 12px 20px;
-      font-weight: 600;
-      font-size: 1.1em;
-    }
-    .task-list {
-      padding: 10px 20px;
-    }
-    .task-card {
-      border-left: 4px solid #0078d4;
-      background: #f8f9fa;
-      padding: 14px 18px;
-      margin: 12px 0;
-      border-radius: 0 8px 8px 0;
-    }
-    .task-content {
-      font-size: 1.05em;
-      color: #2d3436;
-      line-height: 1.5;
-    }
-    .task-time {
-      color: #b2bec3;
-      font-size: 0.8em;
-      margin-top: 6px;
-    }
-    .back-link {
-      text-align: center;
-      margin-top: 40px;
-    }
-    .back-link a {
-      color: #0078d4;
-      text-decoration: none;
-    }
-  </style>
+  <link rel="stylesheet" href="css/subfileStyle.css">
 </head>
 <body>
   <h1>📅 2E HW List</h1>
@@ -189,25 +127,48 @@ function updateIndex() {
     let indexHtml;
     if (!fs.existsSync(indexPath)) {
       console.log('index.html not found, creating...');
-      indexHtml = `<!DOCTYPE html>
-<html lang="zh-CN">
-<head><meta charset="UTF-8"><title>备忘录总览</title>
-<style>
-body{font-family:system-ui;max-width:800px;margin:0 auto;padding:40px 20px;background:#f5f7fa}
-h1{text-align:center;color:#2d3436}
-.week-list{display:flex;flex-direction:column;gap:16px}
-.week-link{background:white;padding:24px;border-radius:16px;text-decoration:none;color:#2d3436;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.week-dates{font-size:1.2em;font-weight:600;color:#0078d4}
-.timestamp{text-align:center;color:#b2bec3;font-size:0.8em;margin-top:40px}
-</style>
+      indexHtml = `<!doctype html>
+<html lang="en-US">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>2E HW List</title>
+  <link rel="stylesheet" href="css/style.css">
+  <meta name="description" content="">
+
+  <meta property="og:title" content="">
+  <meta property="og:type" content="">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+  <meta property="og:image:alt" content="">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.png">
+
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#fafafa">
 </head>
+
 <body>
-<h1>📋 备忘录总览</h1>
-<div class="week-list" id="weekList">
-<!-- WEEK-LINKS -->
-</div>
-<div class="timestamp">最后更新: <!-- TIMESTAMP --></div>
+
+  <!-- Add your site or application content here -->
+  <script src="js/app.js"></script>
+  <h1>2E HW List--Content Page</h1>
+  <h4>The following are links to every week HW List</h4>
+  <br>
+  <div class="week-list" id="weekList">
+    <!-- WEEK-LINKS -->
+    <a href="week-2026-04-13.html">This week (0413-0419)</a>
+  </div>
+
+  <div class="timestamp">Last Update: <!-- TIMESTAMP --></div>
+
+
+
 </body>
+
 </html>`;
       fs.writeFileSync(indexPath, indexHtml);
       console.log('Created index.html');
