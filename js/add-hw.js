@@ -112,8 +112,41 @@ if (html.includes(dateMarker)) {
   }
 }
 
+// Sort date groups by date before saving
+html = sortDateGroups(html);
+
 fs.writeFileSync(filePath, html);
 console.log(`Added to ${weekFileName}: ${content}`);
+
+// Function to sort date groups chronologically
+function sortDateGroups(htmlContent) {
+  // Extract all date groups
+  const dateGroupRegex = /<div class="date-group">[\s\S]*?<!-- DATE-\d{4}-\d{2}-\d{2} -->\s*<\/div>\s*<\/div>/g;
+  const dateGroups = htmlContent.match(dateGroupRegex) || [];
+
+  if (dateGroups.length <= 1) {
+    // No need to sort if there's 0 or 1 date group
+    return htmlContent;
+  }
+
+  // Extract dates from date groups and sort
+  const groupsWithDates = dateGroups.map(group => {
+    const dateMatch = group.match(/<!-- DATE-(\d{4}-\d{2}-\d{2}) -->/);
+    return {
+      date: dateMatch ? dateMatch[1] : '',
+      html: group
+    };
+  }).sort((a, b) => a.date.localeCompare(b.date));
+
+  // Reconstruct the date groups section
+  const sortedGroupsHtml = groupsWithDates.map(item => item.html).join('\n    ');
+
+  // Replace the entire date groups section with the sorted version
+  const dateGroupsRegex = /(<!-- DATE-GROUPS -->)\s*[\s\S]*?(<!-- DATE-GROUPS -->)/;
+  htmlContent = htmlContent.replace(dateGroupsRegex, `    ${sortedGroupsHtml}\n    $1`);
+
+  return htmlContent;
+}
 
 function updateIndex() {
   try {
