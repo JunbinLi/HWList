@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -27,7 +27,7 @@ jobs:
           node-version: '20'
 
       - name: Run script to update memo
-        run: node scripts/add-memo.js
+        run: node scripts/add-hw.js
         env:
           INPUT_CONTENT: ${{ inputs.content }}
           INPUT_DEADLINE: ${{ inputs.deadline }}
