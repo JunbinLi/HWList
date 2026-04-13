@@ -27,7 +27,7 @@ jobs:
           node-version: '20'
 
       - name: Run script to update memo
-        run: node scripts/add-hw.js
+        run: node js/add-hw.js
         env:
           INPUT_CONTENT: ${{ inputs.content }}
           INPUT_DEADLINE: ${{ inputs.deadline }}
