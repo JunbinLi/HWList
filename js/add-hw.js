@@ -192,7 +192,31 @@ function updateIndex() {
 
     const newLink = `<a href="${weekFileName}" class="week-link"><div class="week-dates">${weekStart} - ${weekEnd}</div><div>→</div></a>`;
 
-    indexHtml = indexHtml.replace('<!-- WEEK-LINKS -->', newLink + '\n<!-- WEEK-LINKS -->');
+    // Extract all existing week links and sort them by date
+    const weekLinkRegex = /<a href="(week-\d{4}-\d{2}-\d{2}\.html)"[^>]*>.*?<\/a>/gs;
+    const links = [];
+    let match;
+
+    while ((match = weekLinkRegex.exec(indexHtml)) !== null) {
+      links.push(match[0]);
+    }
+
+    // Add the new link to the array
+    links.push(newLink);
+
+    // Extract dates from filenames and sort links by date
+    links.sort((a, b) => {
+      const dateA = a.match(/week-(\d{4}-\d{2}-\d{2})/)[1];
+      const dateB = b.match(/week-(\d{4}-\d{2}-\d{2})/)[1];
+      return dateA.localeCompare(dateB);
+    });
+
+    // Reconstruct the week links section
+    const sortedLinksHtml = links.join('\n');
+
+    // Replace the entire week links section with the sorted version
+    const weekListRegex = /(<div class="week-list"[^>]*>)\s*(?:.*?\n)*?\s*(<!-- WEEK-LINKS -->)/s;
+    indexHtml = indexHtml.replace(weekListRegex, `$1\n    ${sortedLinksHtml}\n    $2`);
 
     const timestamp = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
     indexHtml = indexHtml.replace(/<!-- TIMESTAMP -->/, timestamp);
