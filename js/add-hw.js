@@ -61,16 +61,16 @@ const dateMarker = `<!-- DATE-${deadline} -->`;
 const taskCard = `
       <div class="task-card">
         <div class="task-content">${content}</div>
-        <div class="task-time"> Added on ${now}</div>
+        <div class="task-time">📝 添加于 ${now}</div>
       </div>`;
 
 if (html.includes(dateMarker)) {
-  // 已存在该日期，直接添加
+  // 已存在该日期，直接添加事项
   html = html.replace(dateMarker, taskCard + '\n      ' + dateMarker);
 } else {
   // 创建新日期分组
   const newDateGroup = `
-    <div class="date-group">
+    <div class="date-group" data-date="${deadline}">
       <div class="date-header">📆 ${deadline}</div>
       <div class="task-list">
         ${taskCard}
@@ -78,39 +78,46 @@ if (html.includes(dateMarker)) {
       </div>
     </div>`;
 
-  // 提取所有日期并排序
-  const dateRegex = /<!-- DATE-(\d{4}-\d{2}-\d{2}) -->/g;
-  const dates = [];
-  let m;
-  while ((m = dateRegex.exec(html)) !== null) dates.push(m[1]);
+  // 找到所有已有日期组，按 data-date 属性排序
+  const groupRegex = /<div class="date-group" data-date="(\d{4}-\d{2}-\d{2})">/g;
+  const existingDates = [];
+  let match;
+  while ((match = groupRegex.exec(html)) !== null) {
+    existingDates.push(match[1]);
+  }
 
-  if (dates.length === 0) {
-    // 第一个日期
+  if (existingDates.length === 0) {
+    // 第一个日期组
     html = html.replace('<!-- DATE-GROUPS -->', newDateGroup + '\n    <!-- DATE-GROUPS -->');
   } else {
-    dates.push(deadline);
-    dates.sort();
-    const pos = dates.indexOf(deadline);
+    // 按日期排序找到插入位置
+    const allDates = [...existingDates, deadline].sort();
+    const insertPos = allDates.indexOf(deadline);
 
-    if (pos === 0) {
-      // 插到最前面
-      html = html.replace('<!-- DATE-GROUPS -->', newDateGroup + '\n    <!-- DATE-GROUPS -->');
+    if (insertPos === 0) {
+      // 插到最前面（最早日期）
+      const firstGroupMatch = html.match(/<div class="date-group" data-date="\d{4}-\d{2}-\d{2}">/);
+      if (firstGroupMatch) {
+        const insertIdx = html.indexOf(firstGroupMatch[0]);
+        html = html.slice(0, insertIdx) + newDateGroup + '\n    ' + html.slice(insertIdx);
+      }
     } else {
-      // 插到前一个日期后面
-      const prevDate = dates[pos - 1];
-      const prevMarker = `<!-- DATE-${prevDate} -->`;
-      const idx = html.indexOf(prevMarker);
-      const after = html.slice(idx);
-      const endMatch = after.match(/(\s*<\/div>\s*<\/div>)/);
-      if (endMatch) {
-        const insertAt = idx + endMatch.index + endMatch[0].length;
-        html = html.slice(0, insertAt) + '\n' + newDateGroup + html.slice(insertAt);
+      // 插到前一个日期组后面
+      const prevDate = allDates[insertPos - 1];
+      // 找到前一个日期组的结束位置（</div> 闭合标签）
+      const prevGroupEndRegex = new RegExp(`<div class="date-group" data-date="${prevDate}">[\\s\\S]*?</div>\\s*</div>`, '');
+      const prevMatch = html.match(prevGroupEndRegex);
+      if (prevMatch) {
+        const insertIdx = html.indexOf(prevMatch[0]) + prevMatch[0].length;
+        html = html.slice(0, insertIdx) + '\n    ' + newDateGroup + html.slice(insertIdx);
       } else {
-        html = html.replace(prevMarker, prevMarker + newDateGroup);
+        // 回退：直接插到 DATE-GROUPS 前
+        html = html.replace('<!-- DATE-GROUPS -->', newDateGroup + '\n    <!-- DATE-GROUPS -->');
       }
     }
   }
 }
+
 
 // Sort date groups by date before saving
 html = sortDateGroups(html);
