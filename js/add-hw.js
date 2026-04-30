@@ -62,8 +62,7 @@ const dateMarker = `<!-- DATE-${deadline} -->`;
 const taskCard = `
       <div class="task-card">
         <div class="task-content">${content}</div>
-        <div class="task-time">Added on ${now}</div>
-        <div class="task-meta"> by ${person}</div>
+        <div class="task-time">Added on ${now} by ${person}</div>
       </div>`;
 
 if (html.includes(dateMarker)) {
