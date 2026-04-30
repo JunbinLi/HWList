@@ -3,6 +3,7 @@ const path = require('path');
 
 const content = process.env.INPUT_CONTENT;
 const deadline = process.env.INPUT_DEADLINE;
+const person = process.env.INPUT_PERSON;
 
 // 计算该日期所在周的周一
 const dueDate = new Date(deadline);
@@ -62,6 +63,7 @@ const taskCard = `
       <div class="task-card">
         <div class="task-content">${content}</div>
         <div class="task-time">Added on ${now}</div>
+        <div class="task-meta"> by ${person}</div>
       </div>`;
 
 if (html.includes(dateMarker)) {
@@ -200,7 +202,7 @@ function updateIndex() {
   <br>
   <div class="week-list" id="weekList">
     <!-- WEEK-LINKS -->
-    <a href="week-2026-04-13.html">This week (0413-0419)</a>
+    <a href="week-2026-04-13.html">2026/04/13-2026/04/19</a>
   </div>
 
   <div class="timestamp">Last Update: <!-- TIMESTAMP --></div>

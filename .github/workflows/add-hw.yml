@@ -11,6 +11,10 @@ on:
         description: '截止日期 (YYYY-MM-DD)'
         required: true
         type: string
+      person:
+        description: '提交人'
+        required: true
+        type: string
 
 jobs:
   add-memo:
@@ -26,16 +30,17 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Run script to update memo
+      - name: Run script to add hw to the list
         run: node js/add-hw.js
         env:
           INPUT_CONTENT: ${{ inputs.content }}
           INPUT_DEADLINE: ${{ inputs.deadline }}
+          INPUT_PERSON: ${{ inputs.person }}
 
       - uses: EndBug/add-and-commit@v10
         with:
           add: |
             week-*.html
             index.html
-          message: '📝 ${{ inputs.deadline }}: ${{ inputs.content }}'
+          message: '📝 ${{ inputs.deadline }}: ${{ inputs.content }} by ${{ inputs.person }}'
           default_author: github_actions
