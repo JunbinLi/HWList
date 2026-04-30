@@ -33,7 +33,7 @@ function createTemplate(weekLabel) {
   <link rel="stylesheet" href="css/subfileStyle.css">
 </head>
 <body>
-  <h1>📅 2E HW List</h1>
+  <h1>2E HW List</h1>
   <div class="week-range">${weekLabel}</div>
 
   <!-- DATE-GROUPS -->
@@ -72,7 +72,7 @@ if (html.includes(dateMarker)) {
   // 创建新日期分组
   const newDateGroup = `
     <div class="date-group" data-date="${deadline}">
-      <div class="date-header">📆 ${deadline}</div>
+      <div class="date-header">${deadline}</div>
       <div class="task-list">
         ${taskCard}
         <!-- DATE-${deadline} -->
